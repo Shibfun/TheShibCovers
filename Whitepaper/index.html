@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSGA Token Whitepaper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #d32f2f;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 20px;
+        }
+        p {
+            margin: 10px 0;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        a {
+            color: #d32f2f;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #d32f2f;
+            color: #fff;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MSGA Token Whitepaper</h1>
+        <p style="text-align: center; font-style: italic;">Make Shib Great Again: A Decentralized Meme Coin on Shibarium</p>
+        <p style="text-align: center;">Published: May 19, 2025</p>
+
+        <div class="section">
+            <h2>1. Introduction</h2>
+            <p>
+                The MSGA token ("Make Shib Great Again") is a fully decentralized meme coin built on the Shibarium network, designed to enhance the utility and engagement of TheShibCovers (TSC) NFTs. By bridging the worlds of NFTs and meme coins, MSGA aims to empower the Shib Magazine community, foster creativity, and amplify the meme-driven energy of the Shiba Inu ecosystem.
+            </p>
+            <p>
+                MSGA introduces a unique staking mechanism that allows holders of TheShibCovers NFTs to convert their NFTs into MSGA tokens and vice versa, creating a seamless interplay between digital collectibles and fungible tokens. This whitepaper outlines the vision, technical architecture, tokenomics, and community-driven goals of the MSGA project.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>2. Project Overview</h2>
+            <h3>2.1 Vision</h3>
+            <p>
+                MSGA is more than a meme coin; it is a community-driven initiative to "Make Shib Great Again" by leveraging the power of Shibarium and TheShibCovers NFTs. The project aims to:
+            </p>
+            <ul>
+                <li>Enhance the utility of TheShibCovers NFTs through tokenization.</li>
+                <li>Drive engagement within the Shib Magazine community.</li>
+                <li>Promote decentralization and community governance in the Shiba Inu ecosystem.</li>
+                <li>Create a fun, meme-powered economy that resonates with the ShibArmy.</li>
+            </ul>
+
+            <h3>2.2 TheShibCovers (TSC) Integration</h3>
+            <p>
+                TheShibCovers is a collection of NFTs on the Shibarium network, representing unique digital covers for Shib Magazine. MSGA allows holders to stake their TSC NFTs to receive 10,000 MSGA tokens per NFT or redeem NFTs by burning the equivalent amount of tokens. This mechanism ensures a dynamic relationship between NFTs and tokens, fostering liquidity and utility.
+            </p>
+            <p>
+                Learn more about TheShibCovers at: <a href="https://shibfun.github.io/TheShibCovers/" target="_blank">https://shibfun.github.io/TheShibCovers/</a>
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>3. Technical Architecture</h2>
+            <h3>3.1 Smart Contract Details</h3>
+            <p>
+                The MSGA token is an ERC-20 compliant contract deployed on the Shibarium network, with additional functionality to interact with TheShibCovers ERC-721 NFTs. Key contract details include:
+            </p>
+            <ul>
+                <li><strong>Contract Address:</strong> 0x5c4f0350420B9a571FcE6eF856f70136BCC229bd</li>
+                <li><strong>NFT Contract Address:</strong> 0x007Bbf85988cAF18Cf4222C9214e4fa019b3e002</li>
+                <li><strong>Network:</strong> Shibarium</li>
+                <li><strong>Standard:</strong> ERC-20 (MSGA), ERC-721 (TheShibCovers)</li>
+            </ul>
+
+            <h3>3.2 Core Functionalities</h3>
+            <p>
+                The MSGA smart contract includes the following key features:
+            </p>
+            <ul>
+                <li><strong>Batch Staking:</strong> Users can stake up to 100 TSC NFTs in a single transaction to mint 10,000 MSGA tokens per NFT.</li>
+                <li><strong>Batch Redemption:</strong> Users can burn 10,000 MSGA tokens per NFT to redeem staked TSC NFTs.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>4. Tokenomics</h2>
+            <h3>4.1 Token Details</h3>
+            <p>
+                MSGA is an ERC-20 token with the following attributes:
+            </p>
+            <ul>
+                <li><strong>Name:</strong> Make Shib Great Again</li>
+                <li><strong>Symbol:</strong> MSGA</li>
+                <li><strong>Decimals:</strong> 18</li>
+                <li><strong>Total Supply:</strong> Dynamic (minted/burned based on NFT staking/redemption)</li>
+            </ul>
+
+            <h3>4.2 Token-NFT Conversion</h3>
+            <p>
+                The MSGA token is directly tied to TheShibCovers NFTs through a fixed conversion rate:
+            </p>
+            <ul>
+                <li><strong>Stake:</strong> 1 TSC NFT = 10,000 MSGA tokens (minted).</li>
+                <li><strong>Redeem:</strong> 10,000 MSGA tokens = 1 TSC NFT (burned).</li>
+            </ul>
+            <p>
+                This mechanism ensures that the MSGA token supply is dynamically adjusted based on staking and redemption activities, maintaining a balanced economy.
+            </p>
+
+            <h3>4.3 Use Cases</h3>
+            <p>
+                MSGA tokens serve multiple purposes within the Shib Magazine ecosystem:
+            </p>
+            <ul>
+                <li><strong>Liquidity:</strong> Provide a fungible alternative to TSC NFTs for trading and transactions.</li>
+                <li><strong>Community Engagement:</strong> Enable participation in Shib Magazine events, contests, or governance.</li>
+                <li><strong>Meme Economy:</strong> Amplify the meme-driven culture of the ShibArmy through token-based interactions.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>5. Community and Ecosystem</h2>
+            <h3>5.1 Shib Magazine</h3>
+            <p>
+                MSGA is deeply integrated with Shib Magazine, a community-driven publication celebrating the Shiba Inu ecosystem. The token aims to enhance the magazine's reach and engagement by incentivizing participation through NFTs and tokens.
+            </p>
+            <p>
+                Special thanks to <a href="https://x.com/TheShibmagazine" target="_blank">@TheShibmagazine</a> for inspiring this project!
+            </p>
+
+            <h3>5.2 Decentralization</h3>
+            <p>
+                MSGA is fully decentralized, with no central authority controlling the token or NFT interactions. The smart contract is transparent, auditable, and governed by the community. Future plans may include community-driven governance mechanisms to further empower the ShibArmy.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>6. Conclusion</h2>
+            <p>
+                MSGA is a bold step toward uniting the power of NFTs and meme coins in the Shibarium ecosystem. By enabling seamless conversion between TheShibCovers NFTs and MSGA tokens, the project creates a vibrant, community-driven economy that celebrates the creativity and passion of the ShibArmy. Join us in making Shib great again!
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>8. References</h2>
+            <ul>
+                <li>MSGA Contract: <a href="https://shibariumscan.io/address/0x5c4f0350420B9a571FcE6eF856f70136BCC229bd" target="_blank">0x5c4f0350420B9a571FcE6eF856f70136BCC229bd</a></li>
+                <li>TheShibCovers NFT Contract: <a href="https://shibariumscan.io/address/0x007Bbf85988cAF18Cf4222C9214e4fa019b3e002" target="_blank">0x007Bbf85988cAF18Cf4222C9214e4fa019b3e002</a></li>
+                <li>TheShibCovers Website: <a href="https://shibfun.github.io/TheShibCovers/" target="_blank">https://shibfun.github.io/TheShibCovers/</a></li>
+                <li>Shib Magazine: <a href="https://x.com/TheShibmagazine" target="_blank">@TheShibmagazine</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 MSGA Community. All rights reserved.</p>
+        <p>Built on Shibarium with ❤️ by the ShibArmy.</p>
+    </div>
+</body>
+</html>
