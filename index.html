@@ -181,6 +181,7 @@
         <div class="header">TheShibCovers (TSC) Staking</div>
         <div class="connect-section">
             <button id="connectWalletButton">Connect Wallet</button>
+            <button id="fillNFTIdsButton" class="action-button" disabled>Fill My NFT IDs</button>
             <div id="networkStatus" class="status">Click to connect...</div>
             <div id="balance" class="balance">MSGA Balance: 0</div>
         </div>
@@ -188,7 +189,8 @@
             <h3>How to Use</h3>
             <ol>
                 <li>Connect your MetaMask wallet and ensure you're on the Shibarium network.</li>
-                <li>To stake: Enter comma-separated NFT IDs (e.g., 1,2,3) and click "Stake NFTs". Approve the contract if prompted.</li>
+                <li>Click "Fill My NFT IDs" to automatically fetch and fill up to 100 of your NFT IDs.</li>
+                <li>To stake: Enter comma-separated NFT IDs (e.g., 1,2,3) or use auto-filled IDs and click "Stake NFTs". Approve the contract if prompted.</li>
                 <li>To redeem: Enter the number of NFTs to redeem (1 NFT = 10,000 MSGA) and click "Redeem NFTs".</li>
                 <li>Ensure sufficient MSGA tokens for redemption (check balance above).</li>
             </ol>
@@ -273,6 +275,25 @@
                 "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
                 "stateMutability": "view",
                 "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "owner", "type": "address"}
+                ],
+                "name": "balanceOf",
+                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "owner", "type": "address"},
+                    {"internalType": "uint256", "name": "index", "type": "uint256"}
+                ],
+                "name": "tokenOfOwnerByIndex",
+                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
             }
         ];
 
@@ -291,10 +312,12 @@
         function updateButtons() {
             const stakeButton = document.getElementById('stakeButton');
             const redeemButton = document.getElementById('redeemButton');
+            const fillNFTIdsButton = document.getElementById('fillNFTIdsButton');
             const stakeTokenIdsInput = document.getElementById('stakeTokenIdsInput').value;
             const redeemCountInput = document.getElementById('redeemCountInput').value;
             stakeButton.disabled = !account || !stakeTokenIdsInput.trim();
             redeemButton.disabled = !account || !redeemCountInput.trim() || parseInt(redeemCountInput) <= 0;
+            fillNFTIdsButton.disabled = !account;
             updateRequiredTokens();
         }
 
@@ -403,6 +426,63 @@
             } catch (error) {
                 status.innerText = `Approval failed: ${error.message || 'Unknown error'}`;
                 return false;
+            }
+        }
+
+        async function fetchUserNFTs() {
+            const status = document.getElementById('networkStatus');
+            try {
+                status.innerText = 'Fetching your NFT IDs...';
+                const balance = await nftContract.methods.balanceOf(account).call();
+                const tokenIds = [];
+                for (let i = 0; i < balance; i++) {
+                    const tokenId = await nftContract.methods.tokenOfOwnerByIndex(account, i).call();
+                    tokenIds.push(Number(tokenId));
+                }
+                return tokenIds;
+            } catch (error) {
+                status.innerText = `Failed to fetch NFTs: ${error.message || 'Unknown error'}`;
+                return [];
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        async function fillNFTIds() {
+            const status = document.getElementById('networkStatus');
+            const fillNFTIdsButton = document.getElementById('fillNFTIdsButton');
+            const stakeTokenIdsInput = document.getElementById('stakeTokenIdsInput');
+
+            if (!web3 || !account) {
+                status.innerText = 'Please connect wallet first.';
+                return;
+            }
+
+            try {
+                fillNFTIdsButton.disabled = true;
+                fillNFTIdsButton.innerHTML = 'Fetching... <span class="spinner"></span>';
+
+                const tokenIds = await fetchUserNFTs();
+                if (tokenIds.length === 0) {
+                    status.innerText = 'No NFTs found in your wallet.';
+                    stakeTokenIdsInput.value = '';
+                } else {
+                    const selectedIds = tokenIds.length > 100 ? shuffleArray(tokenIds).slice(0, 100) : tokenIds;
+                    stakeTokenIdsInput.value = selectedIds.join(',');
+                    status.innerText = `Filled ${selectedIds.length} NFT ID(s) successfully!`;
+                }
+                updateButtons();
+            } catch (error) {
+                status.innerText = `Error filling NFT IDs: ${error.message || 'Unknown error'}`;
+            } finally {
+                fillNFTIdsButton.disabled = false;
+                fillNFTIdsButton.innerHTML = 'Fill My NFT IDs';
             }
         }
 
@@ -533,6 +613,7 @@
         }
 
         document.getElementById('connectWalletButton').addEventListener('click', initializeWeb3);
+        document.getElementById('fillNFTIdsButton').addEventListener('click', fillNFTIds);
         document.getElementById('stakeButton').addEventListener('click', stakeNFTs);
         document.getElementById('redeemButton').addEventListener('click', redeemNFTs);
         document.getElementById('stakeTokenIdsInput').addEventListener('input', updateButtons);
