@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheShibCovers (TSC) Staking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        .header {
+            text-align: center;
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #1e3c72;
+        }
+        .connect-section button {
+            padding: 15px;
+            background: #ff6f61;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.3s, transform 0.2s;
+            margin-bottom: 15px;
+        }
+        .connect-section button:hover {
+            background: #e55a50;
+            transform: translateY(-2px);
+        }
+        .status {
+            font-size: 0.95em;
+            color: #555555;
+            text-align: center;
+            margin-bottom: 20px;
+            word-break: break-all;
+        }
+        .balance {
+            font-size: 1em;
+            color: #1e3c72;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .input-box {
+            margin-bottom: 20px;
+        }
+        .input-box label {
+            display: block;
+            font-size: 1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1e3c72;
+        }
+        .input-box input {
+            width: 100%;
+            padding: 12px;
+            background: #f7f9fc;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            font-size: 1em;
+            color: #333333;
+            transition: border-color 0.3s;
+        }
+        .input-box input:focus {
+            outline: none;
+            border-color: #ff6f61;
+        }
+        .input-box .note {
+            font-size: 0.9em;
+            color: #555555;
+            margin-top: 5px;
+        }
+        .action-button {
+            padding: 15px;
+            background: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.3s, transform 0.2s;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .action-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .action-button:hover:not(:disabled) {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid #fff;
+            border-top: 3px solid #28a745;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .instructions {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f7f9fc;
+            border-radius: 8px;
+        }
+        .instructions h3 {
+            font-size: 1.2em;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+        .instructions ol {
+            font-size: 0.95em;
+            color: #333333;
+            padding-left: 20px;
+        }
+        .instructions ol li {
+            margin-bottom: 8px;
+        }
+        .footer {
+            font-size: 0.9em;
+            color: #ffffff;
+            text-align: center;
+            margin-top: auto;
+            padding: 10px 0;
+        }
+        @media (max-width: 480px) {
+            body { padding: 15px; }
+            .container { padding: 20px; }
+            .header { font-size: 1.6em; }
+            .connect-section button, .action-button { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">TheShibCovers (TSC) Staking</div>
+        <div class="connect-section">
+            <button id="connectWalletButton">Connect Wallet</button>
+            <button id="fillNFTIdsButton" class="action-button" disabled>Fill My NFT IDs</button>
+            <div id="networkStatus" class="status">Click to connect...</div>
+            <div id="balance" class="balance">MSGA Balance: 0</div>
+        </div>
+        <div class="instructions">
+            <h3>How to Use</h3>
+            <ol>
+                <li>Connect your MetaMask wallet and ensure you're on the Shibarium network.</li>
+                <li>Click "Fill My NFT IDs" to automatically fetch and fill up to 100 of your NFT IDs.</li>
+                <li>To stake: Enter comma-separated NFT IDs (e.g., 1,2,3) or use auto-filled IDs and click "Stake NFTs". Approve the contract if prompted.</li>
+                <li>To redeem: Enter the number of NFTs to redeem (1 NFT = 10,000 MSGA) and click "Redeem NFTs".</li>
+                <li>Ensure sufficient MSGA tokens for redemption (check balance above).</li>
+            </ol>
+        </div>
+        <div class="input-box">
+            <label>Stake NFT Token IDs (comma-separated)</label>
+            <input type="text" id="stakeTokenIdsInput" placeholder="e.g., 1,2,3">
+            <div class="note">Note: Approve the contract to transfer your NFTs if needed.</div>
+        </div>
+        <button class="action-button" id="stakeButton" disabled>Stake NFTs</button>
+        <div class="input-box">
+            <label>Redeem NFT Count</label>
+            <input type="number" id="redeemCountInput" placeholder="e.g., 1" min="1">
+            <div class="note">Note: 1 NFT = 10,000 MSGA. Required: <span id="requiredTokens">0</span> MSGA</div>
+        </div>
+        <button class="action-button" id="redeemButton" disabled>Redeem NFTs</button>
+    </div>
+    <div class="footer">© 2025 WoofSwap. All rights reserved.</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <script>
+        const msgaAddress = '0x5c4f0350420B9a571FcE6eF856f70136BCC229bd';
+        const nftContractAddress = '0x007Bbf85988cAF18Cf4222C9214e4fa019b3e002';
+        const msgaAbi = [
+            {
+                "inputs": [{"internalType": "uint256[]", "name": "tokenIds", "type": "uint256[]"}],
+                "name": "batchStakeNFTs",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [{"internalType": "uint256", "name": "count", "type": "uint256"}],
+                "name": "batchRedeemNFTs",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
+                "name": "balanceOf",
+                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "user", "type": "address"},
+                    {"indexed": false, "internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "NFTStaked",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "user", "type": "address"},
+                    {"indexed": false, "internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "NFTRedeemed",
+                "type": "event"
+            }
+        ];
+        const nftAbi = [
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "operator", "type": "address"},
+                    {"internalType": "bool", "name": "approved", "type": "bool"}
+                ],
+                "name": "setApprovalForAll",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": " overridable function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "owner", "type": "address"},
+                    {"internalType": "address", "name": "operator", "type": "address"}
+                ],
+                "name": "isApprovedForAll",
+                "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "owner", "type": "address"}
+                ],
+                "name": "balanceOf",
+                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "owner", "type": "address"},
+                    {"internalType": "uint256", "name": "index", "type": "uint256"}
+                ],
+                "name": "tokenOfOwnerByIndex",
+                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
+            }
+            // 注意：未包含 tokenByIndex，因为它通常用于全局索引，而我们只需要用户拥有的 NFT
+        ];
+
+        const chains = {
+            Shibarium: {
+                chainId: 109,
+                chainName: 'Shibarium',
+                rpcUrl: 'https://rpc.shibariumchain.com',
+                blockExplorer: 'https://shibariumscan.io'
+            }
+        };
+
+        const TOKENS_PER_NFT = 10000 * 10**18;
+        let web3, account, msgaContract, nftContract;
+
+        function updateButtons() {
+            const stakeButton = document.getElementById('stakeButton');
+            const redeemButton = document.getElementById('redeemButton');
+            const fillNFTIdsButton = document.getElementById('fillNFTIdsButton');
+            const stakeTokenIdsInput = document.getElementById('stakeTokenIdsInput').value;
+            const redeemCountInput = document.getElementById('redeemCountInput').value;
+            stakeButton.disabled = !account || !stakeTokenIdsInput.trim();
+            redeemButton.disabled = !account || !redeemCountInput.trim() || parseInt(redeemCountInput) <= 0;
+            fillNFTIdsButton.disabled = !account;
+            updateRequiredTokens();
+        }
+
+        function updateRequiredTokens() {
+            const redeemCountInput = document.getElementById('redeemCountInput').value;
+            const count = parseInt(redeemCountInput) || 0;
+            const requiredTokens = (count * TOKENS_PER_NFT) / 10**18;
+            document.getElementById('requiredTokens').innerText = requiredTokens.toLocaleString();
+        }
+
+        async function fetchMSGABalance() {
+            if (!account || !msgaContract) return;
+            try {
+                const balance = await msgaContract.methods.balanceOf(account).call();
+                const balanceInTokens = Number(balance) / 10**18;
+                document.getElementById('balance').innerText = `MSGA Balance: ${balanceInTokens.toLocaleString()}`;
+            } catch (error) {
+                document.getElementById('balance').innerText = 'MSGA Balance: Error';
+            }
+        }
+
+        async function initializeWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    account = (await web3.eth.getAccounts())[0];
+                    document.getElementById('connectWalletButton').innerText = `Connected: ${account.slice(0, 6)}...${account.slice(-4)}`;
+                    await switchNetwork('Shibarium');
+                    await initializeContracts();
+                    document.getElementById('networkStatus').innerText = `Connected to Shibarium`;
+                    await fetchMSGABalance();
+                    updateButtons();
+                } catch (error) {
+                    document.getElementById('networkStatus').innerText = 'Failed to connect wallet: ' + (error.message || 'Unknown error');
+                }
+            } else {
+                document.getElementById('networkStatus').innerText = 'Please install MetaMask';
+            }
+        }
+
+        async function switchNetwork(chain) {
+            const chainConfig = chains[chain];
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${chainConfig.chainId.toString(16)}` }]
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: `0x${chainConfig.chainId.toString(16)}`,
+                            chainName: chainConfig.chainName,
+                            rpcUrls: [chainConfig.rpcUrl],
+                            nativeCurrency: { name: 'BONE', symbol: 'BONE', decimals: 18 },
+                            blockExplorerUrls: [chainConfig.blockExplorer]
+                        }]
+                    });
+                } else {
+                    throw switchError;
+                }
+            }
+        }
+
+        async function initializeContracts() {
+            msgaContract = new web3.eth.Contract(msgaAbi, msgaAddress);
+            nftContract = new web3.eth.Contract(nftAbi, nftContractAddress);
+        }
+
+        async function waitForTransaction(txHash) {
+            let receipt = null;
+            const maxAttempts = 60;
+            let attempts = 0;
+            while (attempts < maxAttempts) {
+                receipt = await web3.eth.getTransactionReceipt(txHash);
+                if (receipt) {
+                    if (receipt.status) return receipt;
+                    throw new Error(`Transaction ${txHash} failed`);
+                }
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                attempts++;
+            }
+            throw new Error(`Transaction ${txHash} not confirmed after ${maxAttempts} attempts`);
+        }
+
+        async function approveNFTs() {
+            const status = document.getElementById('networkStatus');
+            try {
+                const isApproved = await nftContract.methods.isApprovedForAll(account, msgaAddress).call();
+                if (!isApproved) {
+                    status.innerText = 'Approving contract to manage NFTs...';
+                    const currentGasPrice = await web3.eth.getGasPrice();
+                    const adjustedGasPrice = web3.utils.toBN(currentGasPrice).mul(web3.utils.toBN(15)).div(web3.utils.toBN(10));
+                    const tx = await nftContract.methods.setApprovalForAll(msgaAddress, true).send({
+                        from: account,
+                        gas: web3.utils.toHex(200000),
+                        gasPrice: web3.utils.toHex(adjustedGasPrice)
+                    });
+                    await waitForTransaction(tx.transactionHash);
+                    status.innerText = 'Contract approved successfully!';
+                    return true;
+                }
+                return true;
+            } catch (error) {
+                status.innerText = `Approval failed: ${error.message || 'Unknown error'}`;
+                return false;
+            }
+        }
+
+        async function fetchUserNFTs() {
+            const status = document.getElementById('networkStatus');
+            try {
+                status.innerText = 'Fetching your NFT IDs...';
+                const balance = await nftContract.methods.balanceOf(account).call();
+                const tokenIds = [];
+                for (let i = 0; i < balance; i++) {
+                    const tokenId = await nftContract.methods.tokenOfOwnerByIndex(account, i).call();
+                    tokenIds.push(Number(tokenId));
+                }
+                return tokenIds;
+            } catch (error) {
+                status.innerText = `Failed to fetch NFTs: ${error.message || 'Unknown error'}`;
+                return [];
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        async function fillNFTIds() {
+            const status = document.getElementById('networkStatus');
+            const fillNFTIdsButton = document.getElementById('fillNFTIdsButton');
+            const stakeTokenIdsInput = document.getElementById('stakeTokenIdsInput');
+
+            if (!web3 || !account) {
+                status.innerText = 'Please connect wallet first.';
+                return;
+            }
+
+            try {
+                fillNFTIdsButton.disabled = true;
+                fillNFTIdsButton.innerHTML = 'Fetching... <span class="spinner"></span>';
+
+                const tokenIds = await fetchUserNFTs();
+                if (tokenIds.length === 0) {
+                    status.innerText = 'No NFTs found in your wallet.';
+                    stakeTokenIdsInput.value = '';
+                } else {
+                    const selectedIds = tokenIds.length > 100 ? shuffleArray(tokenIds).slice(0, 100) : tokenIds;
+                    stakeTokenIdsInput.value = selectedIds.join(',');
+                    status.innerText = `Filled ${selectedIds.length} NFT ID(s) successfully!`;
+                }
+                updateButtons();
+            } catch (error) {
+                status.innerText = `Error filling NFT IDs: ${error.message || 'Unknown error'}`;
+            } finally {
+                fillNFTIdsButton.disabled = false;
+                fillNFTIdsButton.innerHTML = 'Fill My NFT IDs';
+            }
+        }
+
+        async function stakeNFTs() {
+            const status = document.getElementById('networkStatus');
+            const stakeButton = document.getElementById('stakeButton');
+            const stakeTokenIdsInput = document.getElementById('stakeTokenIdsInput').value;
+
+            if (!web3 || !account) {
+                status.innerText = 'Please connect wallet first.';
+                return;
+            }
+
+            if (!stakeTokenIdsInput.trim()) {
+                status.innerText = 'Please enter NFT token IDs.';
+                return;
+            }
+
+            const tokenIds = stakeTokenIdsInput.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+            if (tokenIds.length === 0) {
+                status.innerText = 'Invalid token IDs.';
+                return;
+            }
+            if (tokenIds.length > 100) {
+                status.innerText = 'Maximum 100 NFTs can be staked at once.';
+                return;
+            }
+
+            try {
+                stakeButton.disabled = true;
+                stakeButton.innerHTML = 'Approving... <span class="spinner"></span>';
+
+                const approved = await approveNFTs();
+                if (!approved) {
+                    stakeButton.disabled = false;
+                    stakeButton.innerHTML = 'Stake NFTs';
+                    return;
+                }
+
+                stakeButton.innerHTML = 'Staking... <span class="spinner"></span>';
+                status.innerText = `Staking ${tokenIds.length} NFT(s)...`;
+
+                const currentGasPrice = await web3.eth.getGasPrice();
+                const adjustedGasPrice = web3.utils.toBN(currentGasPrice).mul(web3.utils.toBN(15)).div(web3.utils.toBN(10));
+                const tx = await msgaContract.methods.batchStakeNFTs(tokenIds).send({
+                    from: account,
+                    gas: web3.utils.toHex(10000000),
+                    gasPrice: web3.utils.toHex(adjustedGasPrice)
+                });
+
+                status.innerText = `Transaction submitted. Hash: ${tx.transactionHash}`;
+                await waitForTransaction(tx.transactionHash);
+
+                status.innerText = `${tokenIds.length} NFT(s) staked successfully!`;
+                document.getElementById('stakeTokenIdsInput').value = '';
+                await fetchMSGABalance();
+            } catch (error) {
+                let errorMessage = error.message || 'Unknown error';
+                if (error.message.includes('revert')) {
+                    errorMessage = error.message.split('revert')[1]?.trim() || 'Revert reason unknown';
+                }
+                if (error.code === 4001) {
+                    status.innerText = 'Transaction canceled by user.';
+                } else {
+                    status.innerText = `Stake failed: ${errorMessage}`;
+                }
+            } finally {
+                stakeButton.disabled = false;
+                stakeButton.innerHTML = 'Stake NFTs';
+                updateButtons();
+            }
+        }
+
+        async function redeemNFTs() {
+            const status = document.getElementById('networkStatus');
+            const redeemButton = document.getElementById('redeemButton');
+            const redeemCountInput = document.getElementById('redeemCountInput').value;
+
+            if (!web3 || !account) {
+                status.innerText = 'Please connect wallet first.';
+                return;
+            }
+
+            const count = parseInt(redeemCountInput);
+            if (isNaN(count) || count <= 0) {
+                status.innerText = 'Please enter a valid count.';
+                return;
+            }
+            if (count > 100) {
+                status.innerText = 'Maximum 100 NFTs can be redeemed at once.';
+                return;
+            }
+
+            try {
+                redeemButton.disabled = true;
+                redeemButton.innerHTML = 'Redeeming... <span class="spinner"></span>';
+                status.innerText = `Redeeming ${count} NFT(s)...`;
+
+                const currentGasPrice = await web3.eth.getGasPrice();
+                const adjustedGasPrice = web3.utils.toBN(currentGasPrice).mul(web3.utils.toBN(15)).div(web3.utils.toBN(10));
+                const tx = await msgaContract.methods.batchRedeemNFTs(count).send({
+                    from: account,
+                    gas: web3.utils.toHex(10000000),
+                    gasPrice: web3.utils.toHex(adjustedGasPrice)
+                });
+
+                status.innerText = `Transaction submitted. Hash: ${tx.transactionHash}`;
+                await waitForTransaction(tx.transactionHash);
+
+                status.innerText = `${count} NFT(s) redeemed successfully!`;
+                document.getElementById('redeemCountInput').value = '';
+                await fetchMSGABalance();
+            } catch (error) {
+                let errorMessage = error.message || 'Unknown error';
+                if (error.message.includes('revert')) {
+                    errorMessage = error.message.split('revert')[1]?.trim() || 'Revert reason unknown';
+                }
+                if (error code === 4001) {
+                    status.innerText = 'Transaction canceled by user.';
+                } else {
+                    status.innerText = `Redeem failed: ${errorMessage}`;
+                }
+            } finally {
+                redeemButton.disabled = false;
+                redeemButton.innerHTML = 'Redeem NFTs';
+                updateButtons();
+            }
+        }
+
+        document.getElementById('connectWalletButton').addEventListener('click', initializeWeb3);
+        document.getElementById('fillNFTIdsButton').addEventListener('click', fillNFTIds);
+        document.getElementById('stakeButton').addEventListener('click', stakeNFTs);
+        document.getElementById('redeemButton').addEventListener('click', redeemNFTs);
+        document.getElementById('stakeTokenIdsInput').addEventListener('input', updateButtons);
+        document.getElementById('redeemCountInput').addEventListener('input', updateButtons);
+    </script>
+</body>
+</html>
