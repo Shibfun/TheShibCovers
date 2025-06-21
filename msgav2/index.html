@@ -264,7 +264,7 @@
                 "name": "setApprovalForAll",
                 "outputs": [],
                 "stateMutability": "nonpayable",
-                "type": " overridable function"
+                "type": "function"
             },
             {
                 "inputs": [
@@ -295,7 +295,6 @@
                 "stateMutability": "view",
                 "type": "function"
             }
-            // 注意：未包含 tokenByIndex，因为它通常用于全局索引，而我们只需要用户拥有的 NFT
         ];
 
         const chains = {
@@ -601,7 +600,7 @@
                 if (error.message.includes('revert')) {
                     errorMessage = error.message.split('revert')[1]?.trim() || 'Revert reason unknown';
                 }
-                if (error code === 4001) {
+                if (error.code === 4001) {
                     status.innerText = 'Transaction canceled by user.';
                 } else {
                     status.innerText = `Redeem failed: ${errorMessage}`;
